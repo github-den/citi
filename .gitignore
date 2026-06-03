@@ -1,0 +1,38 @@
+# Dependencies
+**/node_modules/
+**/.pnp/
+**/.pnp.js
+# Package manager caches
+**/.npm/
+**/.yarn/cache/
+**/.pnpm-store/
+# Build output and caches
+**/.next/
+**/out/
+**/dist/
+**/build/
+**/coverage/
+**/.turbo/
+**/.vite/
+**/.parcel-cache/
+# Logs
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+# Env files
+.env
+.env.*
+!.env.example
+# Mobile/native generated files
+**/.gradle/
+**/android/app/build/
+**/ios/Pods/
+
+# Emotion Model large files
+**/emotion-model/checkpoints/
+**/emotion-model/exports/
+**/*.safetensors
+**/*.pt
+**/*.pth
