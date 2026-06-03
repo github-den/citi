@@ -15,11 +15,9 @@ def extract_scores(raw_output):
     raise TypeError(f"Unsupported pipeline output shape: {type(raw_output).__name__}")
 
 
-def resolve_model_version(model_dir: str) -> str:
-    model_path = Path(model_dir)
-    if model_path.name == "best" and model_path.parent.name:
-        return model_path.parent.name
-    return model_path.name
+def resolve_model_version(model_id: str) -> str:
+    # Extract the last part of the model ID as the version name
+    return model_id.split("/")[-1] if "/" in model_id else model_id
 
 
 def to_breakdown(scores):
@@ -38,16 +36,16 @@ def to_breakdown(scores):
 
 def main():
     parser = argparse.ArgumentParser(description="Predict 4-class mood labels from feedback text.")
-    parser.add_argument("--model-dir", default="emotion-model/checkpoints/xlm-roberta-base/best")
+    parser.add_argument("--model-id", default="citisense/emotion-detection", help="Hugging Face model ID or local path")
     parser.add_argument("--text", help="Predict one text directly.")
     parser.add_argument("--input-jsonl", help="Predict a batch of rows with {id,text}.")
     parser.add_argument("--output-jsonl", default="emotion-model/exports/predicted_moods.jsonl")
     args = parser.parse_args()
 
-    tokenizer = AutoTokenizer.from_pretrained(args.model_dir)
-    model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_id)
+    model = AutoModelForSequenceClassification.from_pretrained(args.model_id)
     pipeline = TextClassificationPipeline(model=model, tokenizer=tokenizer, top_k=None)
-    model_version = resolve_model_version(args.model_dir)
+    model_version = resolve_model_version(args.model_id)
 
     if args.text:
         scores = extract_scores(pipeline(args.text, truncation=True, max_length=256))
